@@ -34,7 +34,8 @@ class Dessert:
 
         :return: True если калорийность менее 200, иначе False
         """
-        return self._calories < 200
+
+        return isinstance(self._calories, int) and self._calories < 200
 
     @staticmethod
     def is_delicious():
