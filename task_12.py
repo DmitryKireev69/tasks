@@ -37,7 +37,7 @@ class JellyBean(Dessert):
         Проверяет, являются ли желе-бобы вкусными.
         Возвращает False только если flavor == "black licorice".
         """
-        if self._flavor is None or not isinstance(self._flavor, str):
+        if not isinstance(self._flavor, str):
             return True
 
         return self._flavor.lower() != "black licorice"
