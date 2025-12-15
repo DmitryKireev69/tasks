@@ -19,29 +19,30 @@ class BlockTranspositionCipher:
             raise ValueError("Буквы в ключе должны быть уникальны")
 
     def _get_permutation(self) -> list[int]:
-        """Возвращает перестановку для шифрования"""
-        permutation = sorted(range(len(self.key)), key=lambda i: self.key[i])
-        if not self.decrypt:
-            return permutation
+        """Возвращает перестановку для шифрования и дешифрования"""
+        permutation = sorted(range(self.block_size), key=lambda i: self.key[i])
 
-        inv = [0] * self.block_size
-        for item, p in enumerate(permutation):
-            inv[p] = item
-        return inv
+        if self.decrypt:
+            inverse = [0] * self.block_size
+            for index, p in enumerate(permutation):
+                inverse[p] = index
+            return inverse
+        return permutation
 
     def __iter__(self):
         """Итератор по блокам (зашифрованным или расшифрованным)."""
-        padded = self.text.ljust(
-            len(self.text) + (-len(self.text) % self.block_size)
-        )
-        total_blocks = len(padded) // self.block_size
+        padding_needed = -len(self.text) % self.block_size
+        padded_text = self.text.ljust(len(self.text) + padding_needed)
 
-        for block_index in range(total_blocks):
-            block = padded[block_index * self.block_size:(block_index + 1) * self.block_size]
+        for start in range(0, len(padded_text), self.block_size):
+            block = padded_text[start:start + self.block_size]
 
-            result = ''.join(block[self.permutation[j]] for j in range(self.block_size))
+            encrypted_block = [''] * self.block_size
+            for index in range(self.block_size):
+                encrypted_block[self.permutation[index]] = block[index]
 
-            if self.decrypt and block_index == total_blocks - 1:
+            result = ''.join(encrypted_block)
+            if self.decrypt and start == len(padded_text) - self.block_size:
                 result = result.rstrip()
 
             yield result
