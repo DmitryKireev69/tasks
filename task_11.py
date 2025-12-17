@@ -1,7 +1,7 @@
 class Dessert:
     """Класс для представления десерта"""
 
-    def __init__(self, name: str = None, calories: int = None):
+    def __init__(self, name: str = None, calories: int | float = None):
         """
         Конструктор класса Dessert
 
@@ -35,7 +35,7 @@ class Dessert:
         :return: True если калорийность менее 200, иначе False
         """
 
-        return isinstance(self._calories, int) and self._calories < 200
+        return isinstance(self._calories, (int, float)) and self._calories < 200
 
     @staticmethod
     def is_delicious():
